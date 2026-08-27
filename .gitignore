@@ -1,0 +1,74 @@
+# ==========================================
+# Environments & Packages
+# ==========================================
+.venv/
+venv/
+env/
+enterprise_rag_venv/
+*.egg-info/
+build/
+dist/
+wheels/
+*.egg
+
+# ==========================================
+# Python Bytecode & Runtime Caches
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ==========================================
+# Secrets & Environment Variables (CRITICAL)
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# GCP Service Account Keys / ADC credentials
+*service-account*.json
+*credentials*.json
+gcp-key.json
+service_account.json
+
+# ==========================================
+# AI / Embeddings / Local Vector DB & Logs
+# ==========================================
+.logfire/
+logs/
+*.log
+.cache/
+# Local vector database stores & test datasets (if sensitive/large)
+qdrant_storage/
+chroma_db/
+DATA/processed/
+
+# ==========================================
+# OS & IDE Specific Files
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Custom Project Docs (containing personal project IDs/keys)
+# ==========================================
+commands_for_gcloud.md
