@@ -18,17 +18,17 @@ A production-grade, enterprise-level scalable RAG system built with **LangGraph*
 
 ```mermaid
 graph TD
-    User((User)) --> UI[Streamlit UI]
-    UI --> API[FastAPI /query]
-    API --> Guard{NeMo Guardrails}
+    User((User)) --> UI["Streamlit UI"]
+    UI --> API["FastAPI /query"]
+    API --> Guard{"NeMo Guardrails"}
     Guard -->|Blocked| UI
-    Guard -->|Pass| Planner{Planner Node}
-    Planner -->|Conversational| Responder[Responder Node]
-    Planner -->|Technical| Retriever[Retriever Node]
-    Retriever --> Reranker[FlashRank Local Reranker]
+    Guard -->|Pass| Planner{"Planner Node"}
+    Planner -->|Conversational| Responder["Responder Node"]
+    Planner -->|Technical| Retriever["Retriever Node"]
+    Retriever --> Reranker["FlashRank Local Reranker"]
     Reranker --> Responder
     Responder --> UI
-    Responder -.-> Memory[(LangGraph MemorySaver)]
+    Responder -.-> Memory[("LangGraph MemorySaver")]
 ```
 
 ---

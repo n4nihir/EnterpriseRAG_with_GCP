@@ -11,12 +11,12 @@ def _get_ranker() -> Ranker:
     Initializes the FlashRank engine lazily. 
     FlashRank uses a local ONNX model (ms-marco-MiniLM-L-6-v2) for ultra-fast reranking.
     """
-    global _ranker
+    global _ranker  # Ensure model loads once and gets fetched from memory in the subsequent calls
     if _ranker is None:
         logfire.info("🧠 Initializing FlashRank Model (TinyBERT) locally...")
         try:
             # We use a specific cache directory to avoid permission issues in production
-            _ranker = Ranker(cache_dir="/tmp/flashrank")
+            _ranker = Ranker(cache_dir="/tmp/flashrank")  # model_name="ms-marco-MiniLM-L-12-v2"; "ms-marco-TinyBERT-L-2-v2" by default
         except Exception:
             _ranker = Ranker()
     return _ranker
