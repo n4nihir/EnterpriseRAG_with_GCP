@@ -1,13 +1,7 @@
-import logfire
-from langchain_openai import ChatOpenAI
 from app.agents.state import AgentState
+from app.gateway.client import portkey_client, extract_cache_status, GATEWAY_CONFIG
 from app.config import settings
-
-# Initialize the OpenAI reasoning model (o3-mini)
-llm = ChatOpenAI(
-    api_key=settings.OPENAI_API_KEY,
-    model=settings.OPENAI_MODEL
-)
+import logfire
 
 def generate_node(state: AgentState):
     """
@@ -64,32 +58,40 @@ def generate_node(state: AgentState):
 
     with logfire.span("✍️ LLM Synthesis"):
         try:
-            response = llm.invoke(prompt)
-            logfire.info("Response synthesized successfully.")
-            return {
-                "final_answer": response.content,
-                "status": "Response generated.",
-                "messages": [{"role": "assistant", "content": response.content}]
+            create_kwargs = {
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.1
             }
-            # content = response.content
-            # cache_status = extract_cache_status(response)
-            # is_cache_hit = cache_status == "HIT"
+            if not GATEWAY_CONFIG:
+                create_kwargs["model"] = f"@{settings.OPENAI_SLUG}/gpt-4o"
 
-            # if is_cache_hit:
-            #     logfire.info("⚡ Gateway Cache Hit — response served from Portkey cache.")
-            #     plan_update = state["plan"] + ["Cache: Hit ⚡"]
-            #     status = "Cache hit — instant response."
-            # else:
-            #     logfire.info("✅ Response synthesised via LLM.")
-            #     plan_update = state["plan"]
-            #     status = "Response generated."
+            response = portkey_client.with_options(
+                metadata={
+                    "feature": "responder",
+                    "_user": "responder",
+                    "environment": "production"
+                }
+            ).chat.completions.create(**create_kwargs)
 
-            # return {
-            #     "final_answer": content,
-            #     "status": status,
-            #     "plan": plan_update,
-            #     "messages": [{"role": "assistant", "content": content}]
-            # }
+            content = response.choices[0].message.content
+            cache_status = extract_cache_status(response)
+            is_cache_hit = cache_status == "HIT"
+
+            if is_cache_hit:
+                logfire.info("⚡ Gateway Cache Hit — response served from Portkey cache.")
+                plan_update = state["plan"] + ["Cache: Hit ⚡"]
+                status = "Cache hit — instant response."
+            else:
+                logfire.info("✅ Response synthesised via LLM.")
+                plan_update = state["plan"]
+                status = "Response generated."
+
+            return {
+                "final_answer": content,
+                "status": status,
+                "plan": plan_update,
+                "messages": [{"role": "assistant", "content": content}]
+            }
 
         except Exception as e:
             logfire.error(f"LLM Generation failed: {e}")

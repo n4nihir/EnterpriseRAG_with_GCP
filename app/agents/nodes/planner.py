@@ -1,13 +1,9 @@
-from langchain_openai import ChatOpenAI
 from app.agents.state import AgentState
-from app.config import settings
 import logfire
+from app.gateway.client import get_langchain_llm
 
-# Initialize the OpenAI reasoning model (o3-mini)
-llm = ChatOpenAI(
-    api_key=settings.OPENAI_API_KEY,
-    model=settings.OPENAI_MODEL
-)
+# Portkey-backed LLM: fallback + cache + retry - same .invoke() interface as ChatOpenAI
+llm = get_langchain_llm(feature="planner")
 
 def planner_node(state: AgentState):
     """

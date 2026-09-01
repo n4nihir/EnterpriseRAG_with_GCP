@@ -30,8 +30,9 @@ class Settings:
 
     # --- LLM GATEWAY (PORTKEY) ---
     PORTKEY_API_KEY = os.getenv("PORTKEY_API_KEY")
-    GROQ_SLUG =  "rag"     # primary: @rag/llama-3.3-70b-versatile
-    GROQ_SLUG_2 = "brag"  # fallback: @brag/llama-3.1-8b-instant
+    PORTKEY_CONFIG_ID = _clean(os.getenv("PORTKEY_CONFIG_ID", ""))
+    OPENAI_SLUG = _clean(os.getenv("PORTKEY_SLUG_1", "rag"))
+    OPENAI_SLUG_2 = _clean(os.getenv("PORTKEY_SLUG_2", "brag"))
 
     # --- PERSISTENCE (POSTGRES) ---
     DB_USER = os.getenv("DB_USER", "postgres")

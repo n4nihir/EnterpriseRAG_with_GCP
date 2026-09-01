@@ -1,8 +1,8 @@
 import logfire
-from langchain_openai import ChatOpenAI
 from nemoguardrails import RailsConfig, LLMRails
 
 from app.config import settings
+from app.gateway.client import get_langchain_llm
 from app.guardrails.colang_rules import COLANG_CONTENT, YAML_CONTENT, RAIL_INDICATORS
 
 
@@ -12,14 +12,14 @@ _rails: LLMRails | None = None
 def initialize_rails() -> None:
     """
     Build the NeMo LLMRails singleton at app startup.
-    Uses gpt-4o-mini for fast intent classification at the gate —
+    Uses gpt-4o-mini via Portkey Gateway for fast intent classification at the gate —
     the heavier reasoning model is reserved for the RAG pipeline.
     """
     global _rails
 
-    guard_llm = ChatOpenAI(
-        api_key=settings.OPENAI_API_KEY,
-        model="gpt-4o-mini",
+    guard_llm = get_langchain_llm(
+        feature="guardrails",
+        model=f"@{settings.OPENAI_SLUG}/gpt-4o-mini",
         temperature=0
     )
 

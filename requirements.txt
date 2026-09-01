@@ -50,14 +50,14 @@ logfire[fastapi,requests]     # Pydantic Logfire — FastAPI + requests instrume
 loguru                        # Enhanced logging for Python
 
 # # --- GUARDRAILS ---
-# nemoguardrails                # NVIDIA NeMo Guardrails for input/output safety rails
-# langchain-nvidia-ai-endpoints # Langchain integration with NVIDIA AI Endpoints
+nemoguardrails                # NVIDIA NeMo Guardrails for input/output safety rails
+langchain-nvidia-ai-endpoints # Langchain integration with NVIDIA AI Endpoints
 
 # # --- LLM GATEWAY ---
-# portkey-ai                    # Portkey Gateway for unified LLM routing, fallbacks & observability
+portkey-ai                    # Portkey Gateway for unified LLM routing, fallbacks & observability
 
 # # --- EVALUATION (EVALS) ---
-# ragas                         # RAG-specific evaluation metrics (Faithfulness, Relevancy, Recall)
-# deepeval                      # Pytest-compatible test runner wrapping RAGAS & safety metrics
-# langfuse                      # Live production monitoring, tracing & user feedback collection
-# sentence-transformers         # Embeddings
+ragas                         # RAG-specific evaluation metrics (Faithfulness, Relevancy, Recall)
+deepeval                      # Pytest-compatible test runner wrapping RAGAS & safety metrics
+langfuse                      # Live production monitoring, tracing & user feedback collection
+sentence-transformers         # Embeddings
