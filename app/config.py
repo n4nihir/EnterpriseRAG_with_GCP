@@ -31,8 +31,16 @@ class Settings:
     # --- LLM GATEWAY (PORTKEY) ---
     PORTKEY_API_KEY = os.getenv("PORTKEY_API_KEY")
     PORTKEY_CONFIG_ID = _clean(os.getenv("PORTKEY_CONFIG_ID", ""))
-    OPENAI_SLUG = _clean(os.getenv("PORTKEY_SLUG_1", "rag"))
-    OPENAI_SLUG_2 = _clean(os.getenv("PORTKEY_SLUG_2", "brag"))
+    PORTKEY_GUARDRAILS_CONFIG_ID = _clean(os.getenv("PORTKEY_GUARDRAILS_CONFIG_ID", ""))
+    PORTKEY_EVAL_CONFIG_ID = _clean(os.getenv("PORTKEY_EVAL_CONFIG_ID", ""))
+
+    # Feature-specific Slugs (configurable individually via .env)
+    OPENAI_SLUG = _clean(os.getenv("PORTKEY_RAG_SLUG", os.getenv("PORTKEY_SLUG_1", "rag")))
+    OPENAI_SLUG_2 = _clean(os.getenv("PORTKEY_FALLBACK_SLUG", os.getenv("PORTKEY_SLUG_2", "brag")))
+    GUARDRAILS_SLUG = _clean(os.getenv("PORTKEY_GUARDRAILS_SLUG", OPENAI_SLUG))
+    PLANNER_SLUG = _clean(os.getenv("PORTKEY_PLANNER_SLUG", OPENAI_SLUG))
+    RESPONDER_SLUG = _clean(os.getenv("PORTKEY_RESPONDER_SLUG", OPENAI_SLUG))
+    EVALS_SLUG = _clean(os.getenv("PORTKEY_EVALS_SLUG", OPENAI_SLUG))
 
     # --- PERSISTENCE (POSTGRES) ---
     DB_USER = os.getenv("DB_USER", "postgres")

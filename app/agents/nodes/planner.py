@@ -1,9 +1,14 @@
 from app.agents.state import AgentState
 import logfire
+from app.config import settings
 from app.gateway.client import get_langchain_llm
 
 # Portkey-backed LLM: fallback + cache + retry - same .invoke() interface as ChatOpenAI
-llm = get_langchain_llm(feature="planner")
+llm = get_langchain_llm(
+    feature="planner",
+    slug=settings.PLANNER_SLUG,
+    model=f"@{settings.PLANNER_SLUG}/gpt-4o"
+)
 
 def planner_node(state: AgentState):
     """

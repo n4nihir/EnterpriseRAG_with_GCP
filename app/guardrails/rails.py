@@ -19,7 +19,9 @@ def initialize_rails() -> None:
 
     guard_llm = get_langchain_llm(
         feature="guardrails",
-        model=f"@{settings.OPENAI_SLUG}/gpt-4o-mini",
+        slug=settings.GUARDRAILS_SLUG,
+        model=f"@{settings.GUARDRAILS_SLUG}/gpt-4o-mini",
+        config_id=settings.PORTKEY_GUARDRAILS_CONFIG_ID if settings.PORTKEY_GUARDRAILS_CONFIG_ID else None,
         temperature=0
     )
 

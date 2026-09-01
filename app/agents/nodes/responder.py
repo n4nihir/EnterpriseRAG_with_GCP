@@ -63,7 +63,7 @@ def generate_node(state: AgentState):
                 "temperature": 0.1
             }
             if not GATEWAY_CONFIG:
-                create_kwargs["model"] = f"@{settings.OPENAI_SLUG}/gpt-4o"
+                create_kwargs["model"] = f"@{settings.RESPONDER_SLUG}/gpt-4o"
 
             response = portkey_client.with_options(
                 metadata={

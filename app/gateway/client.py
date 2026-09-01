@@ -16,11 +16,17 @@ if GATEWAY_CONFIG:
 portkey_client = Portkey(**portkey_kwargs)
 
 
-def get_langchain_llm(feature: str = "rag", model: str | None = None, temperature: float = 0) -> ChatOpenAI:
+def get_langchain_llm(
+    feature: str = "rag",
+    model: str | None = None,
+    slug: str | None = None,
+    config_id: str | None = None,
+    temperature: float = 0
+) -> ChatOpenAI:
     """
     Returns a Portkey-backed ChatOpenAI client routed through the Portkey AI Gateway.
-    Allows specifying different models (e.g., gpt-4o-mini for guardrails vs gpt-4o for RAG)
-    and tags each call with feature-specific metadata.
+    Allows specifying separate slugs (@guardrails, @planner, @rag, @evals),
+    different models (e.g. gpt-4o-mini vs gpt-4o), and feature metadata tags.
     """
     header_kwargs = {
         "api_key": settings.PORTKEY_API_KEY,
@@ -30,10 +36,12 @@ def get_langchain_llm(feature: str = "rag", model: str | None = None, temperatur
             "environment": "production"
         }
     }
-    if GATEWAY_CONFIG:
-        header_kwargs["config"] = GATEWAY_CONFIG
+    active_config = config_id if config_id else GATEWAY_CONFIG
+    if active_config:
+        header_kwargs["config"] = active_config
 
-    target_model = model or f"@{settings.OPENAI_SLUG}/gpt-4o"
+    target_slug = slug or settings.OPENAI_SLUG
+    target_model = model or f"@{target_slug}/gpt-4o"
 
     return ChatOpenAI(
         api_key=settings.PORTKEY_API_KEY,
@@ -41,6 +49,21 @@ def get_langchain_llm(feature: str = "rag", model: str | None = None, temperatur
         model=target_model,
         temperature=temperature,
         default_headers=createHeaders(**header_kwargs)
+    )
+
+
+def get_eval_llm(model: str = "gpt-4o", temperature: float = 0) -> ChatOpenAI:
+    """
+    Returns a Portkey-backed ChatOpenAI client specifically configured for
+    LLM-as-a-Judge evaluations (RAGAS / DeepEval / synthetic dataset generation).
+    Routes through settings.EVALS_SLUG and attaches PORTKEY_EVAL_CONFIG_ID if present.
+    """
+    return get_langchain_llm(
+        feature="evals_judge",
+        model=f"@{settings.EVALS_SLUG}/{model}",
+        slug=settings.EVALS_SLUG,
+        config_id=settings.PORTKEY_EVAL_CONFIG_ID if settings.PORTKEY_EVAL_CONFIG_ID else None,
+        temperature=temperature
     )
 
 def extract_cache_status(response) -> str:
