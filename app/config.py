@@ -4,26 +4,29 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+def _clean(val: str) -> str:
+    return val.strip().strip('"').strip("'") if isinstance(val, str) else val
+
 class Settings:
     # --- GCP CONFIG ---
-    PROJECT_ID = os.getenv("PROJECT_ID", "dmtxpress-507212")
-    LOCATION = os.getenv("LOCATION", "us-central1")
-    GCP_DOC_AI_LOCATION = os.getenv("GCP_DOC_AI_LOCATION", "us")
-    GCP_DOC_AI_PROCESSOR_ID = os.getenv("GCP_DOC_AI_PROCESSOR_ID")
-    RAW_BUCKET = os.getenv("GCP_RAW_BUCKET", "rag-data-raw-1")
-    PROCESSED_BUCKET = os.getenv("GCP_PROCESSED_BUCKET", "rag-data-processed-1")
+    PROJECT_ID = _clean(os.getenv("PROJECT_ID", "dmtxpress-507212"))
+    LOCATION = _clean(os.getenv("LOCATION", "us-central1"))
+    GCP_DOC_AI_LOCATION = _clean(os.getenv("GCP_DOC_AI_LOCATION", "us"))
+    GCP_DOC_AI_PROCESSOR_ID = _clean(os.getenv("GCP_DOC_AI_PROCESSOR_ID"))
+    RAW_BUCKET = _clean(os.getenv("GCP_RAW_BUCKET", "rag-data-raw-1"))
+    PROCESSED_BUCKET = _clean(os.getenv("GCP_PROCESSED_BUCKET", "rag-data-processed-1"))
 
     # --- VECTOR DB (QDRANT) ---
-    QDRANT_URL = os.getenv("QDRANT_CLUSTER_ENDPOINT")
-    QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+    QDRANT_URL = _clean(os.getenv("QDRANT_CLUSTER_ENDPOINT"))
+    QDRANT_API_KEY = _clean(os.getenv("QDRANT_API_KEY"))
     QDRANT_COLLECTION = "enterprise_rag"
 
     # --- REASONING ENGINE (OPENAI / GROQ) ---
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "o3-mini")
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-    GROQ_FALLBACK_API_KEY = os.getenv("GROQ_FALLBACK_API_KEY")
+    OPENAI_API_KEY = _clean(os.getenv("OPENAI_API_KEY"))
+    OPENAI_MODEL = _clean(os.getenv("OPENAI_MODEL", "o3-mini"))
+    GROQ_API_KEY = _clean(os.getenv("GROQ_API_KEY"))
+    GROQ_MODEL = _clean(os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"))
+    GROQ_FALLBACK_API_KEY = _clean(os.getenv("GROQ_FALLBACK_API_KEY"))
 
     # --- LLM GATEWAY (PORTKEY) ---
     PORTKEY_API_KEY = os.getenv("PORTKEY_API_KEY")

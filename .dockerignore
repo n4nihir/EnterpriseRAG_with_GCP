@@ -1,0 +1,11 @@
+enterprise_rag_venv/
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.env
+.logfire/
+DATA/
+DOCS/
+*.log
