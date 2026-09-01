@@ -1,4 +1,5 @@
 import logfire
+from openai import AsyncOpenAI
 from portkey_ai import Portkey, createHeaders, PORTKEY_GATEWAY_URL
 from langchain_openai import ChatOpenAI
 
@@ -24,9 +25,9 @@ def get_langchain_llm(
     temperature: float = 0
 ) -> ChatOpenAI:
     """
-    Returns a Portkey-backed ChatOpenAI client routed through the Portkey AI Gateway.
-    Allows specifying separate slugs (@guardrails, @planner, @rag, @evals),
-    different models (e.g. gpt-4o-mini vs gpt-4o), and feature metadata tags.
+    Returns a Portkey-backed LangChain ChatOpenAI client.
+    Supports individual component slugs (e.g. @guardrails/gpt-4o-mini, @planner/gpt-4o)
+    and optional custom config IDs.
     """
     header_kwargs = {
         "api_key": settings.PORTKEY_API_KEY,
@@ -36,7 +37,7 @@ def get_langchain_llm(
             "environment": "production"
         }
     }
-    active_config = config_id if config_id else GATEWAY_CONFIG
+    active_config = config_id or GATEWAY_CONFIG
     if active_config:
         header_kwargs["config"] = active_config
 
@@ -64,6 +65,30 @@ def get_eval_llm(model: str = "gpt-4o", temperature: float = 0) -> ChatOpenAI:
         slug=settings.EVALS_SLUG,
         config_id=settings.PORTKEY_EVAL_CONFIG_ID if settings.PORTKEY_EVAL_CONFIG_ID else None,
         temperature=temperature
+    )
+
+
+def get_eval_async_client() -> AsyncOpenAI:
+    """
+    Returns an AsyncOpenAI client configured for Portkey AI Gateway.
+    Pre-wired with PORTKEY_EVAL_CONFIG_ID and metadata tags for RAGAS InstructorLLM.
+    """
+    header_kwargs = {
+        "api_key": settings.PORTKEY_API_KEY,
+        "metadata": {
+            "feature": "evals_judge",
+            "_user": "evals_judge",
+            "environment": "production"
+        }
+    }
+    active_config = settings.PORTKEY_EVAL_CONFIG_ID if settings.PORTKEY_EVAL_CONFIG_ID else GATEWAY_CONFIG
+    if active_config:
+        header_kwargs["config"] = active_config
+
+    return AsyncOpenAI(
+        api_key=settings.PORTKEY_API_KEY,
+        base_url=PORTKEY_GATEWAY_URL,
+        default_headers=createHeaders(**header_kwargs)
     )
 
 def extract_cache_status(response) -> str:
