@@ -13,7 +13,8 @@ import os
 import requests
 import logfire
 
-API_URL = "http://localhost:8000/query"
+_raw_api_url = os.getenv("API_URL", "http://localhost:8000/query").rstrip("/")
+API_URL = f"{_raw_api_url}/query" if not _raw_api_url.endswith("/query") else _raw_api_url
 
 
 def detect_tool(thought_process: list) -> str:

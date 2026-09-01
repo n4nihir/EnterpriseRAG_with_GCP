@@ -1,74 +1,126 @@
 # ==========================================
-# Environments & Packages
+# Environments & Package Distribution
 # ==========================================
 .venv/
 venv/
 env/
+ENV/
 enterprise_rag_venv/
 *.egg-info/
+.eggs/
 build/
 dist/
 wheels/
 *.egg
+*.manifest
+*.spec
 
 # ==========================================
-# Python Bytecode & Runtime Caches
+# Python Bytecode, Caching & Testing
 # ==========================================
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+.cache/
+.hypothesis/
+.tox/
 
 # ==========================================
-# Secrets & Environment Variables (CRITICAL)
+# Jupyter Notebooks
+# ==========================================
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ==========================================
+# Secrets, Keys & Cloud Credentials (CRITICAL)
 # ==========================================
 .env
 .env.*
 !.env.example
 *.pem
 *.key
-# GCP Service Account Keys / ADC credentials
+*.crt
+*.pfx
+*.p12
+# GCP Service Account Keys, OAuth & ADC
 *service-account*.json
 *credentials*.json
 gcp-key.json
 service_account.json
+client_secret*.json
+token.json
+adc.json
 
 # ==========================================
-# AI / Embeddings / Local Vector DB & Logs
+# Telemetry, Observability & Logs
 # ==========================================
 .logfire/
 logs/
 *.log
-.cache/
-# Local vector database stores & test datasets (if sensitive/large)
-qdrant_storage/
-chroma_db/
-DATA/processed/
+*.log.*
 
 # ==========================================
-# OS & IDE Specific Files
+# Local Vector Stores, Databases & Processed Data
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+chroma_db/
+qdrant_storage/
+vector_store/
+DATA/processed/
+eval_results/
+eval_output/
+reports/
+
+# ==========================================
+# Streamlit & Frontend Caches
+# ==========================================
+.streamlit/secrets.toml
+
+# ==========================================
+# Docker & Local Overrides
+# ==========================================
+docker-compose.override.yml
+.docker/
+
+# ==========================================
+# Operating System Files
 # ==========================================
 # macOS
 .DS_Store
 .AppleDouble
 .LSOverride
+._*
 
 # Windows
 Thumbs.db
 ehthumbs.db
+[Dd]esktop.ini
 
-# Editors / IDEs
-.idea/
-.vscode/
+# Linux & Editor Temp Files
+*~
 *.swp
 *.swo
-*~
+*.bak
+*.tmp
 
 # ==========================================
-# Custom Project Docs (containing personal project IDs/keys)
+# IDEs & Code Editors
+# ==========================================
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
+# Project-Specific Scratch & Local Documentation
 # ==========================================
 commands.md
+scratch/

@@ -1,0 +1,64 @@
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: enterprise-rag:latest
+    container_name: enterprise-rag-fastapi
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - REDIS_HOST=host.docker.internal
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  rag-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: enterprise-rag:latest
+    container_name: enterprise-rag-ui
+    restart: unless-stopped
+    command: streamlit run ui/app.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      - API_URL=http://fastapi:8000
+    depends_on:
+      fastapi:
+        condition: service_healthy
+
+  eval-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: enterprise-rag:latest
+    container_name: enterprise-rag-evals
+    restart: unless-stopped
+    command: streamlit run evals/app.py --server.port=8502 --server.address=0.0.0.0 --server.headless=true
+    ports:
+      - "8502:8502"
+    env_file:
+      - .env
+    environment:
+      - API_URL=http://fastapi:8000/query
+    volumes:
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    depends_on:
+      fastapi:
+        condition: service_healthy

@@ -2,10 +2,14 @@ enterprise_rag_venv/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .git/
 .gitignore
+.dockerignore
 .env
 .logfire/
+.DS_Store
 DATA/
 DOCS/
 *.log
